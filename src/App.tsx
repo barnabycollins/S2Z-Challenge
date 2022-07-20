@@ -1,32 +1,61 @@
-import Form from './Form';
+import React from 'react';
+import LeftPanel from './LeftPanel';
 import RightPanel from './RightPanel';
+import OffsetPlanEntry from './constructs';
 import './App.scss';
 
-function Header() {
-  return (
-    <div id="header">
-      <h1>Carbon Offset Simulation Tool</h1>
-    </div>
-  );
+interface AppProps {};
+interface AppState {
+  offsetPlan: OffsetPlanEntry[]
+};
+
+class App extends React.Component<AppProps, AppState> {
+  constructor(props: AppProps) {
+    super(props);
+    this.state = {
+      offsetPlan: []
+    };
+  }
+
+  updatePlan(newPlan: OffsetPlanEntry[]) {
+    this.setState({
+      offsetPlan: newPlan
+    });
+  }
+
+  render() {
+    return (
+      <div id="app">
+        <Header></Header>
+        <AppBody updatePlan={this.updatePlan}></AppBody>
+      </div>
+    );
+  }
 }
 
-function Main() {
-  return (
-    <div id="main">
-      <Form></Form>
-      <RightPanel></RightPanel>
-    </div>
-  );
+class Header extends React.Component {
+  render() {
+    return (
+      <div id="header">
+        <h1>Carbon Offset Simulation Tool</h1>
+      </div>
+    );
+  }
 }
 
-function App() {
+interface AppBodyProps {
+  updatePlan(newPlan: OffsetPlanEntry[]): void
+};
 
-  return (
-    <div id="app">
-      <Header></Header>
-      <Main></Main>
-    </div>
-  );
+class AppBody extends React.Component<AppBodyProps, {}> {
+  render() {
+    return (
+      <div id="main">
+        <LeftPanel></LeftPanel>
+        <RightPanel></RightPanel>
+      </div>
+    );
+  }
 }
 
 export default App;
