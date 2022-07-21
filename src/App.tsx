@@ -1,39 +1,69 @@
 import React from 'react';
 import LeftPanel from './LeftPanel';
 import RightPanel from './RightPanel';
-import OffsetPlanEntry from './constructs';
+import { OffsetPlanEntry }  from './constructs';
+import { calculateCarbon } from './calculateCarbon';
 import './App.scss';
 
 interface AppProps {};
 interface AppState {
-  offsetPlan: OffsetPlanEntry[]
+  offsetPlan: OffsetPlanEntry[],
+  yearsOverMaxTrees: string[]
 };
 
 class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     this.state = {
+      yearsOverMaxTrees: [],
       offsetPlan: []
     };
   }
 
   updatePlan(newPlan: OffsetPlanEntry[]) {
+    let yearlyTrees: {[year: string]: number} = {};
+
+    newPlan.forEach((entry) => {
+      const year = entry.date.year;
+      
+      yearlyTrees[year] = year in yearlyTrees ? yearlyTrees[year] + entry.trees : entry.trees;
+    });
+
+    const yearsOverMaxTrees: string[] = Object.keys(yearlyTrees).filter(key => yearlyTrees[key] > 55);
+
     this.setState({
+      ...this.state,
+      yearsOverMaxTrees: yearsOverMaxTrees,
       offsetPlan: newPlan
     });
   }
 
   render() {
+    const treeQuantityWarning = (() => {
+      const yearCount = this.state.yearsOverMaxTrees.length;
+      const isPlural = yearCount > 1;
+
+      if (yearCount > 0) {
+        return <div>{`
+          Warning: the year${isPlural ? "s" : ""} ${this.state.yearsOverMaxTrees.join(", ")}
+          ${isPlural ? "have" : "has"} too many tree planting operations!
+          Please consider reducing the number of trees planted in this year below the 55-tree maximum.
+        `}</div>;
+      }
+      else return <></>;
+    })();
+
     return (
       <div id="app">
-        <Header></Header>
-        <AppBody updatePlan={this.updatePlan}></AppBody>
+        <AppHeader></AppHeader>
+        {treeQuantityWarning}
+        <AppBody updatePlan={this.updatePlan.bind(this)}></AppBody>
       </div>
     );
   }
 }
 
-class Header extends React.Component {
+class AppHeader extends React.Component {
   render() {
     return (
       <div id="header">

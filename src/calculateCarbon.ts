@@ -1,3 +1,3 @@
-function calculateCarbon() {
+export function calculateCarbon() {
     
 }
