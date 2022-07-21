@@ -1,9 +1,9 @@
-export default interface monthDate {
+export interface MonthDate {
     month: number,
     year: number
 };
 
-export default interface offsetPlanEntry {
-    date: monthDate,
+export interface OffsetPlanEntry {
+    date: MonthDate,
     trees: number
 };

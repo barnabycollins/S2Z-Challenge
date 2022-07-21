@@ -51,7 +51,7 @@ class AppBody extends React.Component<AppBodyProps, {}> {
   render() {
     return (
       <div id="main">
-        <LeftPanel></LeftPanel>
+        <LeftPanel updatePlan={this.props.updatePlan}></LeftPanel>
         <RightPanel></RightPanel>
       </div>
     );
