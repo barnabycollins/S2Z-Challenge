@@ -8,7 +8,8 @@ import './App.scss';
 interface AppProps {};
 interface AppState {
   offsetPlan: OffsetPlanEntry[],
-  yearsOverMaxTrees: string[]
+  yearsOverMaxTrees: string[],
+  totalTrees: number
 };
 
 class App extends React.Component<AppProps, AppState> {
@@ -16,16 +17,19 @@ class App extends React.Component<AppProps, AppState> {
     super(props);
     this.state = {
       yearsOverMaxTrees: [],
-      offsetPlan: []
+      offsetPlan: [],
+      totalTrees: 0
     };
   }
 
   updatePlan(newPlan: OffsetPlanEntry[]) {
     let yearlyTrees: {[year: string]: number} = {};
+    let totalTrees = 0;
 
     newPlan.forEach((entry) => {
+      totalTrees += entry.trees;
+
       const year = entry.date.year;
-      
       yearlyTrees[year] = year in yearlyTrees ? yearlyTrees[year] + entry.trees : entry.trees;
     });
 
@@ -34,7 +38,8 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({
       ...this.state,
       yearsOverMaxTrees: yearsOverMaxTrees,
-      offsetPlan: newPlan
+      offsetPlan: newPlan,
+      totalTrees: totalTrees
     });
   }
 
@@ -57,7 +62,7 @@ class App extends React.Component<AppProps, AppState> {
       <div id="app">
         <AppHeader></AppHeader>
         {treeQuantityWarning}
-        <AppBody updatePlan={this.updatePlan.bind(this)}></AppBody>
+        <AppBody updatePlan={this.updatePlan.bind(this)} totalTrees={this.state.totalTrees}></AppBody>
       </div>
     );
   }
@@ -74,14 +79,15 @@ class AppHeader extends React.Component {
 }
 
 interface AppBodyProps {
-  updatePlan(newPlan: OffsetPlanEntry[]): void
+  updatePlan(newPlan: OffsetPlanEntry[]): void,
+  totalTrees: number
 };
 
-class AppBody extends React.Component<AppBodyProps, {}> {
+class AppBody extends React.Component<AppBodyProps> {
   render() {
     return (
       <div id="main">
-        <LeftPanel updatePlan={this.props.updatePlan}></LeftPanel>
+        <LeftPanel updatePlan={this.props.updatePlan} totalTrees={this.props.totalTrees}></LeftPanel>
         <RightPanel></RightPanel>
       </div>
     );

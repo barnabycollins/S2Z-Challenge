@@ -3,7 +3,8 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { OffsetPlanEntry } from "./constructs";
 
 interface OffsetPlanFormProps {
-  updatePlan(newPlan: OffsetPlanEntry[]): void
+  updatePlan(newPlan: OffsetPlanEntry[]): void,
+  totalTrees: number
 };
 
 interface FormEntryType {
@@ -68,6 +69,9 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
               </tr>
             );
           })}
+          <tr>
+            <th colSpan={2} id="totalTitle">Total</th><td>{props.totalTrees}</td>
+          </tr>
           </tbody>
         </table>
 
