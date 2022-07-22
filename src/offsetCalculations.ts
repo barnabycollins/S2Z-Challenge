@@ -1,5 +1,5 @@
 import { OffsetPlanEntry, MonthDate } from "./constructs";
-import { CURRENT_MONTHDATE, monthsBetween } from "./dates";
+import { CURRENT_MONTHDATE, incrementMonth, monthsBetween } from "./dates";
 
 const MATURE_AGE = 6 * 12; // 6 years in months
 export const MATURE_CARBON_ANNUAL = 28.5; // kg per month
@@ -8,11 +8,11 @@ const MATURE_CARBON = MATURE_CARBON_ANNUAL / 12; // kg per month
 export const PLANT_COST = 120;
 const UPKEEP_COST = 12;
 
-export function estimatedCumulativeConsumptionAtDate(yearlyRate: number, carbonDate: MonthDate) {
+export function estimatedCumulativeProductionAtDate(yearlyRate: number, carbonDate: MonthDate) {
   return yearlyRate/12 * monthsBetween(CURRENT_MONTHDATE, carbonDate);
 }
 
-export function estimatedConsumptionAtDate(yearlyRate: number, _: MonthDate) {
+export function estimatedProductionAtDate(yearlyRate: number, _: MonthDate) {
   return yearlyRate/12;
 }
 
@@ -107,4 +107,17 @@ export function carbonIntakeAtDate(offsetPlan: OffsetPlanEntry[], carbonDate: Mo
   return totalCarbon / 1000;
 }
 
+export function getNeutralDate(offsetPlan: OffsetPlanEntry[], yearlyRate: number) {
+  const totalTrees = offsetPlan.reduce((total, entry) => total + entry.trees, 0);
 
+  if (totalTrees * MATURE_CARBON_ANNUAL < yearlyRate*1000) return {month: -1, year: -1};
+
+  let currentDate = CURRENT_MONTHDATE;
+  console.log()
+  while (carbonIntakeAtDate(offsetPlan, currentDate)*12 < yearlyRate) {
+    if (currentDate.year > 3000) break;
+    currentDate = incrementMonth(currentDate);
+  }
+  
+  return currentDate;
+}

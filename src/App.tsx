@@ -9,7 +9,7 @@ interface AppState {
   offsetPlan: OffsetPlanEntry[],
   yearsOverMaxTrees: string[],
   totalTrees: number,
-  estimatedConsumption: number,
+  estimatedProduction: number,
 };
 
 class App extends React.Component<AppProps, AppState> {
@@ -19,7 +19,7 @@ class App extends React.Component<AppProps, AppState> {
       yearsOverMaxTrees: [],
       offsetPlan: [],
       totalTrees: 0,
-      estimatedConsumption: 0
+      estimatedProduction: 0
     };
   }
 
@@ -41,7 +41,7 @@ class App extends React.Component<AppProps, AppState> {
       yearsOverMaxTrees: yearsOverMaxTrees,
       offsetPlan: formData.offsetPlan,
       totalTrees: totalTrees,
-      estimatedConsumption: formData.estimatedConsumption
+      estimatedProduction: formData.estimatedProduction
     });
   }
 
@@ -62,8 +62,13 @@ class App extends React.Component<AppProps, AppState> {
 
     return (
       <div id="app">
-        <LeftPanel updateFormData={this.updateFormData.bind(this)} totalTrees={this.state.totalTrees}></LeftPanel>
-        <RightPanel offsetPlan={this.state.offsetPlan} estimatedConsumption={this.state.estimatedConsumption}></RightPanel>
+        <LeftPanel
+          updateFormData={this.updateFormData.bind(this)}
+          totalTrees={this.state.totalTrees}
+          estimatedProduction={this.state.estimatedProduction}
+          offsetPlan={this.state.offsetPlan}
+        ></LeftPanel>
+        <RightPanel offsetPlan={this.state.offsetPlan} estimatedProduction={this.state.estimatedProduction}></RightPanel>
       </div>
     );
   }

@@ -9,6 +9,6 @@ export interface OffsetPlanEntry {
 };
 
 export interface FormDataType {
-    estimatedConsumption: number,
+    estimatedProduction: number,
     offsetPlan: OffsetPlanEntry[]
 }

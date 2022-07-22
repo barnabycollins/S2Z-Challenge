@@ -24,7 +24,12 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
   const { register, control, handleSubmit, watch, formState: { errors } } = useForm({
     defaultValues: {
       country: "United Kingdom",
-      offsetRows: [{ month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 10 }]
+      offsetRows: [
+        { month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 55 },
+        { month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 55 },
+        { month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 55 },
+        { month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 55 }
+      ]
     }
   });
 
@@ -41,7 +46,7 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
     offsetPlan.sort((a, b) => monthsBetween(b.date, a.date));
 
     props.updateFormData({
-      estimatedConsumption: consumptions[data.country],
+      estimatedProduction: consumptions[data.country],
       offsetPlan: offsetPlan
     });
   };
@@ -67,7 +72,8 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
           ))}
         </select>
       </div>
-      <div id="table-container">
+      <div className="formTableSpacer"></div>
+      <div id="tableContainer">
         <table>
           <thead>
             <tr>
@@ -94,15 +100,16 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
           })}
           <tr>
             <th colSpan={2} id="totalTitle">Totals</th>
-            <td>{props.totalTrees}</td>
+            <td>{props.totalTrees}</td> {/* TODO: CALCULATE TOTALTREES IN THE FORM */}
             <td>${props.totalTrees*PLANT_COST}</td>
           </tr>
           </tbody>
         </table>
-      </div>      
+      </div>
+      <div className="formTableSpacer"></div>
       <div>
         <button type="button" onClick={() => append({})}>Add Row</button>
-        <input type="submit" id="submit-btn" value="Update Graphs"></input>
+        <input type="submit" id="submit-btn" value="Update Data"></input>
       </div>
     </form>
   );

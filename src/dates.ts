@@ -22,6 +22,22 @@ export function getDateText(date: MonthDate): string {
 	return `${months[date.month-1]} ${date.year}`;
 }
 
+export function incrementMonth(date: MonthDate) {
+  date = {
+    ...date,
+    month: date.month + 1
+  };
+
+  if (date.month > 12) {
+    date = {
+      month: 1,
+      year: date.year + 1
+    };
+  }
+  
+  return date;
+}
+
 export function generateMonthRange() {
 	let months: MonthDate[] = [];
 
@@ -29,17 +45,7 @@ export function generateMonthRange() {
 	months.push(curMonth);
 
 	while (months.length < MONTH_LOOKAHEAD) {
-		curMonth = {
-      ...curMonth,
-      month: curMonth.month + 1
-    };
-
-		if (curMonth.month > 12) {
-			curMonth = {
-				month: 1,
-				year: curMonth.year + 1
-			};
-		}
+    curMonth = incrementMonth(curMonth);
 
 		months.push(curMonth);
 	}
