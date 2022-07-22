@@ -26,6 +26,9 @@ jobs:
     
     - name: Build
       run: npm run build
+          
+    - name: Write CNAME
+      run: echo "s2z-challenge.barnabycollins.com" > dist/CNAME
     
     - name: Deploy to gh-pages branch
       uses: s0/git-publish-subdir-action@develop
