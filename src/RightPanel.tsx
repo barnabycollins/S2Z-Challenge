@@ -1,5 +1,5 @@
 import React from 'react';
-import { LineChart, ComposedChart, Area, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, ComposedChart, Area, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Bar } from 'recharts';
 import { carbonIntakeAtDate, cumulativeCarbonAtDate, cumulativeExpenditureToYear, estimatedConsumptionAtDate, estimatedCumulativeConsumptionAtDate, expenditureInYear } from './offsetCalculations';
 import { MonthDate, OffsetPlanEntry } from './constructs';
 import { graphMonthRange, getDateText, graphYearRange } from './dates';
@@ -53,8 +53,8 @@ class CarbonGraph extends React.Component<CarbonGraphProps> {
       <ResponsiveContainer width={800} height="33%">
         <ComposedChart data={data} margin={graphMargins}>
           <CartesianGrid></CartesianGrid>
-          <Area type="monotone" dataKey="offset" stroke="#00aa00" fill="00ee00" />
-          <Line type="monotone" dataKey="estimatedConsumption" stroke="#ee0000" dot={false} />
+          <Area type="monotone" dataKey="offset" stroke="#006600" fill="#006600" />
+          <Line type="monotone" dataKey="estimatedConsumption" stroke="#990000" dot={false} />
           <XAxis dataKey="monthName"></XAxis>
           <YAxis label={{value: yLabel, angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}}></YAxis>
           <Tooltip formatter={(value: number) => `${(Math.round(value * 100)/100).toFixed(2)} ${unit}`} />
@@ -82,11 +82,11 @@ class CostGraph extends React.Component<GraphProps> {
       <ResponsiveContainer width={800} height="33%">
         <ComposedChart data={data} margin={graphMargins}>
           <CartesianGrid />
-          <Area type="monotone" dataKey="cumulativeCost" stroke="#8884d8" />
-          <Line type="monotone" dataKey="yearlyExpenditure" stroke="#8884d8" dot={false} />
+          <Area type="monotone" dataKey="cumulativeCost" stroke="#444499" fill="#444499" />
+          <Bar type="monotone" dataKey="yearlyExpenditure" barSize={10} />
           <XAxis dataKey="year" />
           <YAxis label={{value: "Cost (£)", angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}} />
-          <Tooltip formatter={(value: number) => `£${value}`} />
+          <Tooltip formatter={(value: number) => `£${value}`} allowEscapeViewBox={{ x: false, y: false }} />
         </ComposedChart>
       </ResponsiveContainer>
     );

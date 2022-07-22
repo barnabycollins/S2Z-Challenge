@@ -5,7 +5,7 @@ const MATURE_AGE = 6 * 12; // 6 years in months
 export const MATURE_CARBON_ANNUAL = 28.5; // kg per month
 const MATURE_CARBON = MATURE_CARBON_ANNUAL / 12; // kg per month
 
-const PLANT_COST = 120;
+export const PLANT_COST = 120;
 const UPKEEP_COST = 12;
 
 export function estimatedCumulativeConsumptionAtDate(yearlyRate: number, carbonDate: MonthDate) {

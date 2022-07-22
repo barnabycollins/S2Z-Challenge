@@ -12,9 +12,13 @@ export default class LeftPanel extends React.Component<LeftPanelProps, {}> {
     return (
       <div id="leftPanel">
         <div id="header">
-          <h1>Carbon Offset Simulation Tool</h1>
+          <h1>Carbon Offset Simulator</h1>
         </div>
         <OffsetPlanForm updateFormData={this.props.updateFormData} totalTrees={this.props.totalTrees}></OffsetPlanForm>
+        <div id="summary">
+          <p>Average personal consumption: many tons per year.</p>
+          <p>Minimum number of fully-grown trees required to replenish this annual usage: </p>
+        </div>
       </div>
     );
   }
