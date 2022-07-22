@@ -1,9 +1,9 @@
 import React from "react";
-import { OffsetPlanEntry } from './constructs';
+import { FormDataType } from './constructs';
 import { OffsetPlanForm } from './OffsetPlanForm';
 
 interface LeftPanelProps {
-  updatePlan(newPlan: OffsetPlanEntry[]): void,
+  updateFormData(formData: FormDataType): void,
   totalTrees: number
 };
 
@@ -11,7 +11,10 @@ export default class LeftPanel extends React.Component<LeftPanelProps, {}> {
   render() {
     return (
       <div id="leftPanel">
-        <OffsetPlanForm updatePlan={this.props.updatePlan} totalTrees={this.props.totalTrees}></OffsetPlanForm>
+        <div id="header">
+          <h1>Carbon Offset Simulation Tool</h1>
+        </div>
+        <OffsetPlanForm updateFormData={this.props.updateFormData} totalTrees={this.props.totalTrees}></OffsetPlanForm>
       </div>
     );
   }

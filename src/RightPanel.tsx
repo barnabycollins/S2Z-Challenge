@@ -1,67 +1,109 @@
 import React from 'react';
-import { LineChart, ComposedChart, Area, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
-import { cumulativeCarbonAtDate } from './carbonCalculation';
+import { LineChart, ComposedChart, Area, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { carbonIntakeAtDate, cumulativeCarbonAtDate, cumulativeExpenditureToYear, estimatedConsumptionAtDate, estimatedCumulativeConsumptionAtDate, expenditureInYear } from './offsetCalculations';
 import { MonthDate, OffsetPlanEntry } from './constructs';
-import { currentMonthRange, getDateText } from './dates';
+import { graphMonthRange, getDateText, graphYearRange } from './dates';
 
 interface GraphProps {
   offsetPlan: OffsetPlanEntry[]
 };
 
-interface GraphDataEntry {
-  monthDate: MonthDate,
-  monthName: string,
-  value: number
+interface CarbonGraphProps extends GraphProps {
+  estimatedConsumption: number,
+  graphType: "cumulative" | "intake"
 }
 
-class CumulativeCarbonGraph extends React.Component<GraphProps> {
-  render() {
-    const data: GraphDataEntry[] = currentMonthRange.map((month: MonthDate) => {
-      return {
-        monthDate: month,
-        monthName: getDateText(month),
-        value: cumulativeCarbonAtDate(this.props.offsetPlan, month)
-      };
-    });
+interface CarbonGraphDataEntry {
+  monthDate: MonthDate,
+  monthName: string,
+  offset: number
+}
 
-    console.log(data);
+const graphMargins = { top: 20, right: 20, left: 20, bottom: 20 };
+
+class CarbonGraph extends React.Component<CarbonGraphProps> {
+  offsetFunction: (offsetPlan: OffsetPlanEntry[], carbonDate: MonthDate) => number;
+  estimateFunction: (yearlyRate: number, carbonDate: MonthDate) => number;
+
+  constructor(props: CarbonGraphProps) {
+    super(props);
+
+    if (props.graphType === "cumulative") {
+      this.offsetFunction = cumulativeCarbonAtDate;
+      this.estimateFunction = estimatedCumulativeConsumptionAtDate;
+    }
+    else {
+      this.offsetFunction = carbonIntakeAtDate;
+      this.estimateFunction = estimatedConsumptionAtDate;
+    }
+  }
+
+  render() {
+    const data: CarbonGraphDataEntry[] = graphMonthRange.map((month: MonthDate) => ({
+      monthDate: month,
+      monthName: getDateText(month),
+      offset: this.offsetFunction(this.props.offsetPlan, month),
+      estimatedConsumption: this.estimateFunction(this.props.estimatedConsumption, month)
+    }));
+
+    const unit = this.props.graphType === "cumulative" ? "tons" : "tons pcm";
+    const yLabel = this.props.graphType === "cumulative" ? "Cumulative Carbon" : "Monthly Carbon Intake";
   
     return (
-      <ComposedChart width={400} height={400} data={data}>
-        <Area type="monotone" dataKey="value" stroke="#8884d8" />
-        <CartesianGrid></CartesianGrid>
-        <XAxis dataKey="monthName"></XAxis>
-        <YAxis label={{value: "Cumulative carbon captured", angle: -90}}></YAxis>
-        <Tooltip />
-      </ComposedChart>
+      <ResponsiveContainer width={800} height="33%">
+        <ComposedChart data={data} margin={graphMargins}>
+          <CartesianGrid></CartesianGrid>
+          <Area type="monotone" dataKey="offset" stroke="#00aa00" fill="00ee00" />
+          <Line type="monotone" dataKey="estimatedConsumption" stroke="#ee0000" dot={false} />
+          <XAxis dataKey="monthName"></XAxis>
+          <YAxis label={{value: yLabel, angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}}></YAxis>
+          <Tooltip formatter={(value: number) => `${(Math.round(value * 100)/100).toFixed(2)} ${unit}`} />
+        </ComposedChart>
+      </ResponsiveContainer>
     );
   }
 };
 
+interface CostGraphDataEntry {
+  year: number,
+  yearlyExpenditure: number,
+  cumulativeCost: number
+}
+
 class CostGraph extends React.Component<GraphProps> {
   render() {
-    const data = [{name: 'Page A', uv: 400, pv: 2400, amt: 2400 }];
+    const data: CostGraphDataEntry[] = graphYearRange.map((year: number) => ({
+      year: year,
+      yearlyExpenditure: expenditureInYear(this.props.offsetPlan, year),
+      cumulativeCost: cumulativeExpenditureToYear(this.props.offsetPlan, year)
+    }));
   
     return (
-      <LineChart width={400} height={400} data={data}>
-        <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-        <CartesianGrid></CartesianGrid>
-        <XAxis></XAxis>
-        <YAxis></YAxis>
-      </LineChart>
+      <ResponsiveContainer width={800} height="33%">
+        <ComposedChart data={data} margin={graphMargins}>
+          <CartesianGrid />
+          <Area type="monotone" dataKey="cumulativeCost" stroke="#8884d8" />
+          <Line type="monotone" dataKey="yearlyExpenditure" stroke="#8884d8" dot={false} />
+          <XAxis dataKey="year" />
+          <YAxis label={{value: "Cost (£)", angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}} />
+          <Tooltip formatter={(value: number) => `£${value}`} />
+        </ComposedChart>
+      </ResponsiveContainer>
     );
   }
 };
 
 interface RightPanelProps {
-  offsetPlan: OffsetPlanEntry[]
+  offsetPlan: OffsetPlanEntry[],
+  estimatedConsumption: number
 }
 
 class RightPanel extends React.Component<RightPanelProps> {
   render() {
     return (
       <div id="rightPanel">
-        <CumulativeCarbonGraph offsetPlan={this.props.offsetPlan}></CumulativeCarbonGraph>
+        <CarbonGraph graphType="cumulative" offsetPlan={this.props.offsetPlan} estimatedConsumption={this.props.estimatedConsumption}></CarbonGraph>
+        <CarbonGraph graphType="intake" offsetPlan={this.props.offsetPlan} estimatedConsumption={this.props.estimatedConsumption}></CarbonGraph>
         <CostGraph offsetPlan={this.props.offsetPlan}></CostGraph>
       </div>
     );

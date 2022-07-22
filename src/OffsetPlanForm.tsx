@@ -1,9 +1,11 @@
-import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { OffsetPlanEntry } from "./constructs";
+import { FormDataType, OffsetPlanEntry } from "./constructs";
+import { countries, consumptions } from "./countryConsumptionData";
+import { CURRENT_MONTH, CURRENT_YEAR, monthsBetween } from "./dates";
+import { MATURE_CARBON_ANNUAL } from "./offsetCalculations";
 
 interface OffsetPlanFormProps {
-  updatePlan(newPlan: OffsetPlanEntry[]): void,
+  updateFormData(formData: FormDataType): void,
   totalTrees: number
 };
 
@@ -13,27 +15,35 @@ interface OffsetEntryType {
   trees: number
 }
 
-interface FormDataType {
+interface InputDataType {
+  country: string,
   offsetRows: OffsetEntryType[]
 }
 
 export function OffsetPlanForm(props: OffsetPlanFormProps) {
   const { register, control, handleSubmit, watch, formState: { errors } } = useForm({
     defaultValues: {
-      offsetRows: [{ month: 7, year: 2022, trees: 0 }]
+      country: "United Kingdom",
+      offsetRows: [{ month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 0 }]
     }
   });
 
-  const onSubmit = (data: FormDataType) => {
-    props.updatePlan(data.offsetRows.map((entry: OffsetEntryType) => {
-      return {
-        date: {
-          month: entry.month,
-          year: entry.year
-        },
-        trees: entry.trees
-      }
+  const onSubmit = (data: InputDataType) => {
+    let offsetPlan: OffsetPlanEntry[] = data.offsetRows.map((entry: OffsetEntryType) => ({
+      date: {
+        month: entry.month,
+        year: entry.year
+      },
+      trees: entry.trees
     }));
+
+    // Sort plan into chronological order
+    offsetPlan.sort((a, b) => monthsBetween(b.date, a.date));
+
+    props.updateFormData({
+      estimatedConsumption: consumptions[data.country],
+      offsetPlan: offsetPlan
+    });
   };
 
   const {
@@ -48,6 +58,16 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
   return (
     <div id="offsetForm">
       <form onSubmit={handleSubmit(onSubmit)}>
+        <select {...register("country", {required: true})}>
+          {countries.map(country => (
+            <option key={country} value={country}>
+              {country}
+            </option>
+          ))}
+        </select><br></br>
+        Average personal consumption: {consumptions[watch("country")]} tons per year.
+        <br></br>
+        Minimum number of fully-grown trees required to replenish this annual usage: {Math.ceil(consumptions[watch("country")]*1000 / MATURE_CARBON_ANNUAL)}
         <table>
           <thead>
             <tr>
@@ -65,7 +85,7 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
                 <td><input type="number" {...register(`offsetRows.${index}.year`, { required: true, valueAsNumber: true, min: 1900, max: 3000 })} /></td>
                 <td><input type="number" {...register(`offsetRows.${index}.trees`, { required: true, valueAsNumber: true, min: 0, max: 55 })} /></td>
 
-                <td><button type="button" onClick={() => remove(index)}>Delete Row</button></td>
+                <td>{index !== 0 ? <button type="button" onClick={() => remove(index)}>Delete Row</button> : <></>}</td>
               </tr>
             );
           })}
@@ -76,7 +96,7 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
         </table>
 
         <button type="button" onClick={() => append({})}>Add Row</button>
-        <input type="submit" id="submit-btn"></input>
+        <input type="submit" id="submit-btn" value="Update Graphs"></input>
       </form>
     </div>
   );

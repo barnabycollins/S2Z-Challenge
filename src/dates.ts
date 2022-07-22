@@ -7,10 +7,11 @@ export const CURRENT_MONTHDATE: MonthDate = {
 	year: CURRENT_YEAR
 };
 
-const YEAR_LOOKAHEAD = 10*12; // 10 years
+const YEAR_LOOKAHEAD = 20;
+const MONTH_LOOKAHEAD = YEAR_LOOKAHEAD*12;
 
-export const currentMonthRange = generateMonthRange();
-console.log(currentMonthRange);
+export const graphMonthRange = generateMonthRange();
+export const graphYearRange = [...Array(20).keys()].map(i => i + CURRENT_YEAR);
 
 export function monthsBetween(from: MonthDate, to: MonthDate): number {
 	return (to.year - from.year)*12 + (to.month - from.month);
@@ -27,7 +28,7 @@ export function generateMonthRange() {
 	let curMonth: MonthDate = CURRENT_MONTHDATE;
 	months.push(curMonth);
 
-	while (months.length < YEAR_LOOKAHEAD) {
+	while (months.length < MONTH_LOOKAHEAD) {
 		curMonth = {
       ...curMonth,
       month: curMonth.month + 1
@@ -39,8 +40,6 @@ export function generateMonthRange() {
 				year: curMonth.year + 1
 			};
 		}
-
-		console.log(JSON.stringify(curMonth));
 
 		months.push(curMonth);
 	}

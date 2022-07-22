@@ -1,14 +1,15 @@
 import React from 'react';
 import LeftPanel from './LeftPanel';
 import RightPanel from './RightPanel';
-import { OffsetPlanEntry }  from './constructs';
+import { FormDataType, OffsetPlanEntry }  from './constructs';
 import './App.scss';
 
 interface AppProps {};
 interface AppState {
   offsetPlan: OffsetPlanEntry[],
   yearsOverMaxTrees: string[],
-  totalTrees: number
+  totalTrees: number,
+  estimatedConsumption: number,
 };
 
 class App extends React.Component<AppProps, AppState> {
@@ -17,15 +18,16 @@ class App extends React.Component<AppProps, AppState> {
     this.state = {
       yearsOverMaxTrees: [],
       offsetPlan: [],
-      totalTrees: 0
+      totalTrees: 0,
+      estimatedConsumption: 0
     };
   }
 
-  updatePlan(newPlan: OffsetPlanEntry[]) {
+  updateFormData(formData: FormDataType) {
     let yearlyTrees: {[year: string]: number} = {};
     let totalTrees = 0;
 
-    newPlan.forEach((entry) => {
+    formData.offsetPlan.forEach((entry) => {
       totalTrees += entry.trees;
 
       const year = entry.date.year;
@@ -37,8 +39,9 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({
       ...this.state,
       yearsOverMaxTrees: yearsOverMaxTrees,
-      offsetPlan: newPlan,
-      totalTrees: totalTrees
+      offsetPlan: formData.offsetPlan,
+      totalTrees: totalTrees,
+      estimatedConsumption: formData.estimatedConsumption
     });
   }
 
@@ -59,22 +62,8 @@ class App extends React.Component<AppProps, AppState> {
 
     return (
       <div id="app">
-        <AppHeader></AppHeader>
-        {treeQuantityWarning}
-        <div id="main">
-          <LeftPanel updatePlan={this.updatePlan.bind(this)} totalTrees={this.state.totalTrees}></LeftPanel>
-          <RightPanel offsetPlan={this.state.offsetPlan}></RightPanel>
-        </div>
-      </div>
-    );
-  }
-}
-
-class AppHeader extends React.Component {
-  render() {
-    return (
-      <div id="header">
-        <h1>Carbon Offset Simulation Tool</h1>
+        <LeftPanel updateFormData={this.updateFormData.bind(this)} totalTrees={this.state.totalTrees}></LeftPanel>
+        <RightPanel offsetPlan={this.state.offsetPlan} estimatedConsumption={this.state.estimatedConsumption}></RightPanel>
       </div>
     );
   }
