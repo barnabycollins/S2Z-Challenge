@@ -2,7 +2,6 @@ import React from 'react';
 import LeftPanel from './LeftPanel';
 import RightPanel from './RightPanel';
 import { OffsetPlanEntry }  from './constructs';
-import { calculateCarbon } from './calculateCarbon';
 import './App.scss';
 
 interface AppProps {};
@@ -62,7 +61,10 @@ class App extends React.Component<AppProps, AppState> {
       <div id="app">
         <AppHeader></AppHeader>
         {treeQuantityWarning}
-        <AppBody updatePlan={this.updatePlan.bind(this)} totalTrees={this.state.totalTrees}></AppBody>
+        <div id="main">
+          <LeftPanel updatePlan={this.updatePlan.bind(this)} totalTrees={this.state.totalTrees}></LeftPanel>
+          <RightPanel offsetPlan={this.state.offsetPlan}></RightPanel>
+        </div>
       </div>
     );
   }
@@ -73,22 +75,6 @@ class AppHeader extends React.Component {
     return (
       <div id="header">
         <h1>Carbon Offset Simulation Tool</h1>
-      </div>
-    );
-  }
-}
-
-interface AppBodyProps {
-  updatePlan(newPlan: OffsetPlanEntry[]): void,
-  totalTrees: number
-};
-
-class AppBody extends React.Component<AppBodyProps> {
-  render() {
-    return (
-      <div id="main">
-        <LeftPanel updatePlan={this.props.updatePlan} totalTrees={this.props.totalTrees}></LeftPanel>
-        <RightPanel></RightPanel>
       </div>
     );
   }

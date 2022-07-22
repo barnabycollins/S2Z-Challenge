@@ -7,14 +7,14 @@ interface OffsetPlanFormProps {
   totalTrees: number
 };
 
-interface FormEntryType {
+interface OffsetEntryType {
   month: number,
   year: number,
   trees: number
 }
 
 interface FormDataType {
-  offsetRows: FormEntryType[]
+  offsetRows: OffsetEntryType[]
 }
 
 export function OffsetPlanForm(props: OffsetPlanFormProps) {
@@ -25,7 +25,7 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
   });
 
   const onSubmit = (data: FormDataType) => {
-    props.updatePlan(data.offsetRows.map((entry: FormEntryType) => {
+    props.updatePlan(data.offsetRows.map((entry: OffsetEntryType) => {
       return {
         date: {
           month: entry.month,
