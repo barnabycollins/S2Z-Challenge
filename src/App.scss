@@ -21,7 +21,7 @@
     margin-right: 1.5vw;
 
     h1, h2, h3, h4, h5, h6 {
-      margin: 0 0 0.7em 0;
+      margin: 0 0 0.5em;
     }
 
     #offsetForm {
@@ -53,7 +53,7 @@
         display: flex;
         flex-direction: column;
 
-        margin: 2em 1em;
+        margin: 1.5em 0;
 
         flex-grow: 1;
         height: 1px;
@@ -65,6 +65,7 @@
           table {
             width: 100%;
             table-layout: fixed;
+            margin: 0 -5px;
     
             th, td {
               text-align: left;
@@ -98,7 +99,7 @@
     #summary {
       text-align: justify;
 
-      .formWarning {
+      #treeQuantityWarning {
         color: #dd0000;
       }
     }

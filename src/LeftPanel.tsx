@@ -34,10 +34,12 @@ export default class LeftPanel extends React.Component<LeftPanelProps, {}> {
       const isPlural = yearCount > 1;
 
       if (yearCount > 0) {
-        return <p className="formWarning">{`
+        return <p id="treeQuantityWarning">{`
           Warning: the year${isPlural ? "s" : ""} ${yearsOverMaxTrees.join(", ")}
           ${isPlural ? "have" : "has"} too many tree planting operations!
-          Please consider reducing the number of trees planted in this year below the 55-tree maximum.
+          The simulator will still compute accurate values for the data you have
+          entered, but please consider reducing the number of trees planted in
+          ${isPlural ? "these years" : "this year"} below the 55-tree maximum.
         `}</p>;
       }
       else return <></>;
