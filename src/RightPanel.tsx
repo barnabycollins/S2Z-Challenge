@@ -56,7 +56,7 @@ class CarbonGraph extends React.Component<CarbonGraphProps> {
           <Area type="monotone" dataKey="offset" stroke="#006600" fill="#006600" />
           <Line type="monotone" dataKey="estimatedConsumption" stroke="#990000" dot={false} />
           <XAxis dataKey="monthName" />
-          <YAxis label={{value: yLabel, angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}} />
+          <YAxis width={80} label={{value: yLabel, angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}} />
           <Tooltip formatter={(value: number) => `${(Math.round(value * 1000)/1000).toFixed(3)} ${unit}`} />
         </ComposedChart>
       </ResponsiveContainer>
@@ -85,7 +85,7 @@ class CostGraph extends React.Component<GraphProps> {
           <Area type="monotone" dataKey="cumulativeCost" stroke="#444499" fill="#444499" />
           <Bar type="monotone" dataKey="yearlyExpenditure" barSize={10} />
           <XAxis dataKey="year" />
-          <YAxis label={{value: "Cost ($)", angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}} />
+          <YAxis width={80} label={{value: "Cost ($)", angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}} />
           <Tooltip formatter={(value: number) => `$${value}`} allowEscapeViewBox={{ x: false, y: false }} />
         </ComposedChart>
       </ResponsiveContainer>
