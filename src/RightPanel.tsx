@@ -1,5 +1,5 @@
 import React from 'react';
-import { LineChart, ComposedChart, Area, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Bar } from 'recharts';
+import { ComposedChart, Area, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Bar } from 'recharts';
 import { carbonIntakeAtDate, cumulativeCarbonAtDate, cumulativeExpenditureToYear, estimatedProductionAtDate, estimatedCumulativeProductionAtDate, expenditureInYear } from './offsetCalculations';
 import { MonthDate, OffsetPlanEntry } from './constructs';
 import { graphMonthRange, getDateText, graphYearRange } from './dates';
@@ -85,8 +85,8 @@ class CostGraph extends React.Component<GraphProps> {
           <Area type="monotone" dataKey="cumulativeCost" stroke="#444499" fill="#444499" />
           <Bar type="monotone" dataKey="yearlyExpenditure" barSize={10} />
           <XAxis dataKey="year" />
-          <YAxis label={{value: "Cost (£)", angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}} />
-          <Tooltip formatter={(value: number) => `£${value}`} allowEscapeViewBox={{ x: false, y: false }} />
+          <YAxis label={{value: "Cost ($)", angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}} />
+          <Tooltip formatter={(value: number) => `$${value}`} allowEscapeViewBox={{ x: false, y: false }} />
         </ComposedChart>
       </ResponsiveContainer>
     );

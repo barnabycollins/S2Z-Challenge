@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { FormDataType, OffsetPlanEntry } from "./constructs";
 import { countries, consumptions } from "./countryConsumptionData";
 import { CURRENT_MONTH, CURRENT_YEAR, monthsBetween } from "./dates";
-import { MATURE_CARBON_ANNUAL, PLANT_COST } from "./offsetCalculations";
+import { PLANT_COST } from "./offsetCalculations";
 
 interface OffsetPlanFormProps {
   updateFormData(formData: FormDataType): void,
@@ -25,10 +26,8 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
     defaultValues: {
       country: "United Kingdom",
       offsetRows: [
-        { month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 55 },
-        { month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 55 },
-        { month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 55 },
-        { month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 55 }
+        { month: CURRENT_MONTH, year: CURRENT_YEAR, trees: 50 },
+        { month: 1, year: CURRENT_YEAR+1, trees: 30 },
       ]
     }
   });
@@ -51,6 +50,11 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
     });
   };
 
+  useEffect(() => {
+    const subscription = watch(() => handleSubmit(onSubmit)());
+    return () => subscription.unsubscribe();
+  }, [handleSubmit, watch]);
+
   const {
     fields,
     append,
@@ -72,8 +76,8 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
           ))}
         </select>
       </div>
-      <div className="formTableSpacer"></div>
       <div id="tableContainer">
+      <h2>Purchases</h2>
         <table>
           <thead>
             <tr>
@@ -94,7 +98,7 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
 
                 <td>{`$${watch(`offsetRows.${index}.trees`)*PLANT_COST || 0}`}</td>
 
-                <td>{index !== 0 ? <button type="button" onClick={() => remove(index)}>Delete Row</button> : <></>}</td>
+                <td>{index !== 0 ? <button type="button" onClick={() => remove(index)}>Delete</button> : <></>}</td>
               </tr>
             );
           })}
@@ -106,10 +110,9 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
           </tbody>
         </table>
       </div>
-      <div className="formTableSpacer"></div>
       <div>
-        <button type="button" onClick={() => append({})}>Add Row</button>
-        <input type="submit" id="submit-btn" value="Update Data"></input>
+        <button type="button" onClick={() => append({})}>Add Purchase</button>
+        {/*<input type="submit" id="submit-btn" value="Update Data"></input>*/}
       </div>
     </form>
   );
