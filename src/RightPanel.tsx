@@ -52,11 +52,11 @@ class CarbonGraph extends React.Component<CarbonGraphProps> {
     return (
       <ResponsiveContainer width={800} height="33%">
         <ComposedChart data={data} margin={graphMargins}>
-          <CartesianGrid></CartesianGrid>
+          <CartesianGrid />
           <Area type="monotone" dataKey="offset" stroke="#006600" fill="#006600" />
           <Line type="monotone" dataKey="estimatedConsumption" stroke="#990000" dot={false} />
-          <XAxis dataKey="monthName"></XAxis>
-          <YAxis label={{value: yLabel, angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}}></YAxis>
+          <XAxis dataKey="monthName" />
+          <YAxis label={{value: yLabel, angle: -90, position: "insideLeft", style: { textAnchor: 'middle' }}} />
           <Tooltip formatter={(value: number) => `${(Math.round(value * 1000)/1000).toFixed(3)} ${unit}`} />
         </ComposedChart>
       </ResponsiveContainer>

@@ -77,38 +77,40 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
         </select>
       </div>
       <div id="tableContainer">
-      <h2>Purchases</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Month (1-12)</th>
-              <th>Year</th>
-              <th>Trees to plant (0-55)</th>
-              <th>Planting cost</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-          {fields.map((item, index) => {
-            return (
-              <tr key={item.id}>
-                <td><input type="number" {...register(`offsetRows.${index}.month`, { required: true, valueAsNumber: true, min: 1, max: 12 })} /></td>
-                <td><input type="number" {...register(`offsetRows.${index}.year`, { required: true, valueAsNumber: true, min: 1900, max: 3000 })} /></td>
-                <td><input type="number" {...register(`offsetRows.${index}.trees`, { required: true, valueAsNumber: true, min: 0, max: 55 })} /></td>
-
-                <td>{`$${watch(`offsetRows.${index}.trees`)*PLANT_COST || 0}`}</td>
-
-                <td>{index !== 0 ? <button type="button" onClick={() => remove(index)}>Delete</button> : <></>}</td>
+        <h2>Purchases</h2>
+        <div id="tableScrollBox">
+          <table>
+            <thead>
+              <tr>
+                <th>Month (1-12)</th>
+                <th>Year</th>
+                <th>Trees to plant (0-55)</th>
+                <th>Planting cost</th>
+                <th></th>
               </tr>
-            );
-          })}
-          <tr>
-            <th colSpan={2} id="totalTitle">Totals</th>
-            <td>{props.totalTrees}</td> {/* TODO: CALCULATE TOTALTREES IN THE FORM */}
-            <td>${props.totalTrees*PLANT_COST}</td>
-          </tr>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+            {fields.map((item, index) => {
+              return (
+                <tr key={item.id}>
+                  <td><input type="number" {...register(`offsetRows.${index}.month`, { required: true, valueAsNumber: true, min: 1, max: 12 })} /></td>
+                  <td><input type="number" {...register(`offsetRows.${index}.year`, { required: true, valueAsNumber: true, min: 1900, max: 3000 })} /></td>
+                  <td><input type="number" {...register(`offsetRows.${index}.trees`, { required: true, valueAsNumber: true, min: 0, max: 55 })} /></td>
+
+                  <td>{`$${watch(`offsetRows.${index}.trees`)*PLANT_COST || 0}`}</td>
+
+                  <td>{index !== 0 ? <button type="button" onClick={() => remove(index)}>Delete</button> : <></>}</td>
+                </tr>
+              );
+            })}
+            <tr>
+              <th colSpan={2} id="totalTitle">Totals</th>
+              <td>{props.totalTrees}</td> {/* TODO: CALCULATE TOTALTREES IN THE FORM */}
+              <td>${props.totalTrees*PLANT_COST}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <div>
         <button type="button" onClick={() => append({})}>Add Purchase</button>
