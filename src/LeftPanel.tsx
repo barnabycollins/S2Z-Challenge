@@ -21,6 +21,28 @@ export default class LeftPanel extends React.Component<LeftPanelProps, {}> {
     const neutralText = neutralDate.month === -1 ? "you will not reach carbon neutrality" : `you will reach carbon neutrality by the end of ${getDateText(neutralDate)}`;
     const netPositiveText = netPositiveDate.month === -1 ? "you will not reach net carbon positivity in the next 1000 years" : `you will reach net carbon positivity by the end of ${getDateText(netPositiveDate)}`;
 
+    let yearlyTrees: {[year: string]: number} = {};
+
+    this.props.offsetPlan.forEach((entry) => {
+      const year = entry.date.year;
+      yearlyTrees[year] = year in yearlyTrees ? yearlyTrees[year] + entry.trees : entry.trees;
+    });
+    
+    const yearsOverMaxTrees: string[] = Object.keys(yearlyTrees).filter(key => yearlyTrees[key] > 55);
+    const treeQuantityWarning = (() => {
+      const yearCount = yearsOverMaxTrees.length;
+      const isPlural = yearCount > 1;
+
+      if (yearCount > 0) {
+        return <p className="formWarning">{`
+          Warning: the year${isPlural ? "s" : ""} ${yearsOverMaxTrees.join(", ")}
+          ${isPlural ? "have" : "has"} too many tree planting operations!
+          Please consider reducing the number of trees planted in this year below the 55-tree maximum.
+        `}</p>;
+      }
+      else return <></>;
+    })();
+
     const plantCost = this.props.totalTrees * PLANT_COST;
     const upkeepCost = this.props.totalTrees * UPKEEP_COST;
 
@@ -31,6 +53,7 @@ export default class LeftPanel extends React.Component<LeftPanelProps, {}> {
         </div>
         <OffsetPlanForm updateFormData={this.props.updateFormData} totalTrees={this.props.totalTrees}></OffsetPlanForm>
         <div id="summary">
+          {treeQuantityWarning}
           <p>
             The average person in your country produces {this.props.estimatedProduction} tons of carbon dioxide per year.
             This amount would require {requiredTrees} trees to compensate for annual emissions.

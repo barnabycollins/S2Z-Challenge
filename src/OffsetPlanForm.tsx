@@ -91,11 +91,15 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
             </thead>
             <tbody>
             {fields.map((item, index) => {
+              const monthClass = errors.offsetRows?.[index]?.month !== undefined ? "validationError" : "";
+              const yearClass = errors.offsetRows?.[index]?.year !== undefined ? "validationError" : "";
+              const treesClass = errors.offsetRows?.[index]?.trees !== undefined ? "validationError" : "";
+              
               return (
                 <tr key={item.id}>
-                  <td><input type="number" {...register(`offsetRows.${index}.month`, { required: true, valueAsNumber: true, min: 1, max: 12 })} /></td>
-                  <td><input type="number" {...register(`offsetRows.${index}.year`, { required: true, valueAsNumber: true, min: 1900, max: 3000 })} /></td>
-                  <td><input type="number" {...register(`offsetRows.${index}.trees`, { required: true, valueAsNumber: true, min: 0, max: 55 })} /></td>
+                  <td><input className={monthClass} type="number" {...register(`offsetRows.${index}.month`, { required: true, valueAsNumber: true, min: 1, max: 12 })} /></td>
+                  <td><input className={yearClass} type="number" {...register(`offsetRows.${index}.year`, { required: true, valueAsNumber: true, min: 1900, max: 3000 })} /></td>
+                  <td><input className={treesClass} type="number" {...register(`offsetRows.${index}.trees`, { required: true, valueAsNumber: true, min: 0, max: 55 })} /></td>
 
                   <td>{`$${watch(`offsetRows.${index}.trees`)*PLANT_COST || 0}`}</td>
 
@@ -105,7 +109,7 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
             })}
             <tr>
               <th colSpan={2} id="totalTitle">Totals</th>
-              <td>{props.totalTrees}</td> {/* TODO: CALCULATE TOTALTREES IN THE FORM */}
+              <td>{props.totalTrees}</td>
               <td>${props.totalTrees*PLANT_COST}</td>
             </tr>
             </tbody>
