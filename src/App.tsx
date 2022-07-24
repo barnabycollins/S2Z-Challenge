@@ -1,14 +1,15 @@
 import React from 'react';
 import LeftPanel from './LeftPanel';
 import RightPanel from './RightPanel';
-import { FormDataType, OffsetPlanEntry }  from './constructs';
+import { OffsetPlanEntry }  from './constructs';
+import { FormDataType } from './OffsetPlanForm';
 import './App.scss';
 
 interface AppProps {};
 interface AppState {
   offsetPlan: OffsetPlanEntry[],
   totalTrees: number,
-  estimatedProduction: number,
+  estimatedProduction: number
 };
 
 export default class App extends React.Component<AppProps, AppState> {
@@ -22,6 +23,10 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   updateFormData(formData: FormDataType) {
+    /**
+     * Takes data from the UI form and updates the app's state.
+     */
+
     const totalTrees = formData.offsetPlan.reduce((total, entry) => total + entry.trees, 0);
 
     this.setState({
@@ -41,7 +46,10 @@ export default class App extends React.Component<AppProps, AppState> {
           estimatedProduction={this.state.estimatedProduction}
           offsetPlan={this.state.offsetPlan}
         ></LeftPanel>
-        <RightPanel offsetPlan={this.state.offsetPlan} estimatedProduction={this.state.estimatedProduction}></RightPanel>
+        <RightPanel
+          offsetPlan={this.state.offsetPlan}
+          estimatedProduction={this.state.estimatedProduction}
+        ></RightPanel>
       </div>
     );
   }

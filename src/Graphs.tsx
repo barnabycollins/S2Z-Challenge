@@ -22,6 +22,12 @@ interface CarbonGraphDataEntry {
 const graphMargins = { top: 20, right: 20, left: 20, bottom: 20 };
 
 export class CarbonGraph extends React.Component<CarbonGraphProps> {
+  /**
+   * A reusable component with two modes: cumulative and intake. This can be
+   * used to display both the cumulative carbon production graph and the yearly
+   * intake graph as shown in the UI, depending on the graphType prop.
+   */
+
   offsetFunction: (offsetPlan: OffsetPlanEntry[], carbonDate: MonthDate) => number;
   estimateFunction: (yearlyRate: number, carbonDate: MonthDate) => number;
 
@@ -39,6 +45,9 @@ export class CarbonGraph extends React.Component<CarbonGraphProps> {
   }
 
   render() {
+    /**
+     * Compute the date to plot
+     */
     const data: CarbonGraphDataEntry[] = graphMonthRange.map((month: MonthDate) => ({
       monthDate: month,
       monthName: getDateText(month),
@@ -71,6 +80,10 @@ interface CostGraphDataEntry {
 }
 
 export class CostGraph extends React.Component<GraphProps> {
+  /**
+   * Component to generate the annual / cumulative cost graph.
+   */
+
   render() {
     const data: CostGraphDataEntry[] = graphYearRange.map((year: number) => ({
       year: year,

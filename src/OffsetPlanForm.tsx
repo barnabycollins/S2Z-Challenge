@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { FormDataType, OffsetPlanEntry } from "./constructs";
+import { OffsetPlanEntry } from "./constructs";
 import { countries, consumptions } from "./countryConsumptionData";
 import { CURRENT_MONTH, CURRENT_YEAR, monthsBetween } from "./dates";
 import { PLANT_COST } from "./offsetCalculations";
@@ -10,7 +10,20 @@ interface OffsetPlanFormProps {
   totalTrees: number
 };
 
+export interface FormDataType {
+    /**
+     * The interface representing the data from the form.
+     */
+
+    estimatedProduction: number,
+    offsetPlan: OffsetPlanEntry[]
+}
+
 interface OffsetEntryType {
+  /**
+   * Interface representing a single entry in the form. Not to be confused with
+   * OffsetPlanEntry, which stores the date in a MonthDate.
+   */
   month: number,
   year: number,
   trees: number
@@ -22,6 +35,10 @@ interface InputDataType {
 }
 
 export function OffsetPlanForm(props: OffsetPlanFormProps) {
+  /**
+   * Component representing the UI offset input form.
+   */
+
   const { register, control, handleSubmit, watch, formState: { errors } } = useForm({
     defaultValues: {
       country: "United Kingdom",
@@ -33,6 +50,11 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
   });
 
   const onSubmit = (data: InputDataType) => {
+    /**
+     * Runs when the form is submitted.
+     */
+
+    // Turn the form data into an OffsetPlanEntry[] for the rest of the application to use
     let offsetPlan: OffsetPlanEntry[] = data.offsetRows.map((entry: OffsetEntryType) => ({
       date: {
         month: entry.month,
@@ -44,17 +66,20 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
     // Sort plan into chronological order
     offsetPlan.sort((a, b) => monthsBetween(b.date, a.date));
 
+    // Pass the form data back up through the hierarchy to the App component.
     props.updateFormData({
       estimatedProduction: consumptions[data.country],
       offsetPlan: offsetPlan
     });
   };
 
+  // Run onSubmit() whenever the form is updated
   useEffect(() => {
     const subscription = watch(() => handleSubmit(onSubmit)());
     return () => subscription.unsubscribe();
   }, [handleSubmit, watch]);
 
+  // Initialise a field array (this allows us to add and remove form entries as required)
   const {
     fields,
     append,
@@ -91,6 +116,8 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
             </thead>
             <tbody>
             {fields.map((item, index) => {
+              // Generate a form row for each item in the field array
+
               const monthClass = errors.offsetRows?.[index]?.month !== undefined ? "validationError" : "";
               const yearClass = errors.offsetRows?.[index]?.year !== undefined ? "validationError" : "";
               const treesClass = errors.offsetRows?.[index]?.trees !== undefined ? "validationError" : "";
@@ -118,7 +145,6 @@ export function OffsetPlanForm(props: OffsetPlanFormProps) {
       </div>
       <div>
         <button type="button" onClick={() => append({})}>Add Purchase</button>
-        {/*<input type="submit" id="submit-btn" value="Update Data"></input>*/}
       </div>
     </form>
   );

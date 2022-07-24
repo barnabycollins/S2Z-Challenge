@@ -8,6 +8,9 @@ interface RightPanelProps {
 }
 
 export default class RightPanel extends React.Component<RightPanelProps> {
+  /**
+   * Component representing the right-hand side of the application (containing the graphs).
+   */
   render() {
     return (
       <div id="rightPanel">
